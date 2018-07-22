@@ -1,0 +1,23 @@
+variables:
+  DOCKER_DRIVER: overlay2
+  IMAGE_NAME: $CI_PROJECT_PATH
+
+services:
+- docker:dind
+
+build:
+  stage: build
+  script:
+  - docker build -t $IMAGE_NAME .
+
+sast:
+  stage: test
+  image: $IMAGE_NAME
+  script:
+  - npm run security-check
+
+test:
+  stage: test
+  image: $IMAGE_NAME
+  script:
+  - yarn test --coverage

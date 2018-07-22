@@ -1,0 +1,183 @@
+import React from "react";
+import ReactDOM from "react-dom";
+import { mount, shallow } from "enzyme";
+import { MemoryRouter } from "react-router-dom";
+import { AppContext, appState } from "../../contexts/App";
+import { CONFIG } from "../../config";
+
+import { Search } from "../../components/header/Search";
+
+import axios from "axios";
+import MockAdapter from "axios-mock-adapter";
+import { namespaces } from "../data/namespaces";
+import { definitions } from "../data/definitions";
+
+const API_URL = CONFIG.api;
+const mock = new MockAdapter(axios);
+mock.onGet(`${API_URL}/search/`).reply(200, definitions.bar);
+
+/*
+ * `<Search>`
+ */
+describe("<Search/>", () => {
+  let testState, history, onChange, getOptions;
+
+  beforeEach(() => {
+    history = { push: jest.fn() };
+    testState = Object.assign({}, appState);
+    testState.namespaces = Object.assign({}, namespaces);
+    testState.namespaces.active = testState.namespaces.usPanels[0];
+    testState.definitions.active = Object.assign({}, definitions.bar);
+    testState.selectDefinition = jest.fn();
+
+    onChange = jest.spyOn(Search.WrappedComponent.prototype, "onChange");
+    getOptions = jest.spyOn(Search.WrappedComponent.prototype, "getOptions");
+  });
+
+  afterEach(() => {
+    testState.selectDefinition.mockReset();
+    history.push.mockReset();
+    onChange.mockRestore();
+    getOptions.mockRestore();
+  });
+
+  it("renders without crashing", () => {
+    let div = document.createElement("div");
+    ReactDOM.render(
+      <MemoryRouter>
+        <AppContext.Provider value={testState}>
+          <Search />
+        </AppContext.Provider>
+      </MemoryRouter>,
+      div
+    );
+    ReactDOM.unmountComponentAtNode(div);
+  });
+
+  it("onChange is called from child with Context properties", () => {
+    /*
+     * we're consuming the `definitions` object and `selectDefinition`
+     * method from the Context and pass them to our parents `onChange`
+     */
+    let div = document.createElement("div");
+    let wrapper = mount(
+      <MemoryRouter>
+        <AppContext.Provider value={testState}>
+          <Search.WrappedComponent history={history} />
+        </AppContext.Provider>
+      </MemoryRouter>,
+      { attachTo: div }
+    );
+
+    wrapper
+      .find("Select#definition-search")
+      .instance()
+      .props.onChange(definitions.bar);
+
+    expect(onChange).toBeCalledWith(
+      definitions.bar,
+      testState.definitions,
+      testState.selectDefinition
+    );
+
+    // cleanup
+    wrapper.unmount();
+  });
+
+  it("activates the definition if not yet active and pushes the user", () => {
+    let div = document.createElement("div");
+    let wrapper = mount(
+      <MemoryRouter>
+        <AppContext.Provider value={testState}>
+          <Search.WrappedComponent history={history} />
+        </AppContext.Provider>
+      </MemoryRouter>,
+      { attachTo: div }
+    );
+
+    wrapper
+      .find("Select#definition-search")
+      .instance()
+      .props.onChange(definitions.baz);
+
+    /*
+     *  notice the setup of testState in beforeEach:
+     *    active definition is `definitions.bar`
+     */
+    expect(onChange).toBeCalledWith(
+      definitions.baz,
+      testState.definitions,
+      testState.selectDefinition
+    );
+
+    // then we do activate the `definition` and push the user
+    expect(testState.selectDefinition).toHaveBeenCalled();
+    expect(history.push).toHaveBeenCalled();
+
+    // cleanup
+    wrapper.unmount();
+  });
+
+  it("doesn't activate an already active definition hence doesn't push the user", () => {
+    let div = document.createElement("div");
+    let wrapper = mount(
+      <MemoryRouter>
+        <AppContext.Provider value={testState}>
+          <Search.WrappedComponent history={history} />
+        </AppContext.Provider>
+      </MemoryRouter>,
+      { attachTo: div }
+    );
+
+    wrapper
+      .find("Select#definition-search")
+      .instance()
+      .props.onChange(definitions.bar);
+
+    /*
+     *  notice the setup of testState in beforeEach:
+     *    active definition is `definitions.bar`
+     */
+    expect(onChange).toBeCalledWith(
+      definitions.bar,
+      testState.definitions,
+      testState.selectDefinition
+    );
+
+    // then we do not activate the `definition` again do not push the user
+    expect(testState.selectDefinition).not.toHaveBeenCalled();
+    expect(history.push).not.toHaveBeenCalled();
+
+    // cleanup
+    wrapper.unmount();
+  });
+
+  it("`getOptions` with searchTerm and AppContext properties", () => {
+    let div = document.createElement("div");
+    let wrapper = mount(
+      <MemoryRouter>
+        <AppContext.Provider value={testState}>
+          <Search.WrappedComponent history={history} />
+        </AppContext.Provider>
+      </MemoryRouter>,
+      { attachTo: div }
+    );
+
+    let callback = jest.fn();
+
+    wrapper
+      .find("Select#definition-search")
+      .instance()
+      .props.loadOptions("gnarf", callback);
+
+    expect(getOptions).toBeCalledWith(
+      "gnarf",
+      callback,
+      testState.searchFilter,
+      testState.namespaces.active
+    );
+
+    // cleanup
+    wrapper.unmount();
+  });
+});
