@@ -6,7 +6,8 @@ const API_URL = CONFIG.api;
 export function Api(cancelToken) {
   return {
     get: path => {
-      //let url = path ? `${API_URL}/${path}/` : `${API_URL}`;
+      let url = path ? `${API_URL}/${path}/` : `${API_URL}`;
+      console.log(url);
       // return axios.get(url, { cancelToken }).then(res => res.data);
 
       // fake API response
