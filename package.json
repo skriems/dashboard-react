@@ -11,24 +11,21 @@
     "react-feather": "^1.1.4",
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.1.1",
-    "react-select": "^2.1.2",
+    "react-select": "^1.3.0",
     "reactstrap": "^6.5.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "security-check": "nsp check --preprocessor yarn --reporter table"
+    "eject": "react-scripts eject"
   },
   "devDependencies": {
-    "enzyme": "^3.7.0",
-    "enzyme-adapter-react-16": "^1.7.0",
+    "enzyme": "^3.8.0",
+    "enzyme-adapter-react-16": "^1.7.1",
     "eslint": "5.6.0",
     "eslint-plugin-react": "^7.11.1",
-    "jest-enzyme": "^7.0.1",
-    "nsp": "^3.2.1",
-    "nsp-preprocessor-yarn": "^1.1.2"
+    "jest-enzyme": "^7.0.1"
   },
   "jest": {
     "collectCoverageFrom": [
