@@ -14,7 +14,7 @@ sast:
   stage: test
   image: $IMAGE_NAME
   script:
-  - npm run security-check
+  - yarn audit
 
 test:
   stage: test
