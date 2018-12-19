@@ -1,6 +1,7 @@
 dashboard-react
 ===============
 
+[![Build Status](https://travis-ci.org/skriems/dashboard-react.svg?branch=master)](https://travis-ci.org/skriems/dashboard-react)
 [![Greenkeeper badge](https://badges.greenkeeper.io/skriems/dashboard-react.svg)](https://greenkeeper.io/)
 
 > dashboard skeleton in react
