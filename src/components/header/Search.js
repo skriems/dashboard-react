@@ -1,19 +1,36 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
+import AsyncSelect from "react-select/lib/Async";
 
-import { Async } from "react-select";
 import { SearchAPI } from "../../utils/api";
 import { debounce } from "../../utils/tools";
 
 const search = (query, callback) => {
   SearchAPI(query)
-    .then(objects => {
-      callback(null, { options: objects });
+    .then(options => {
+      callback( options );
     })
-    .catch(error => callback(error, null));
+    .catch(error => callback(error));
 };
 
 const debouncedSearch = debounce(search, 800);
+
+const customStyles = {
+  control: styles => ({
+    ...styles,
+    width: '100%',
+    backgroundColor: 'rgba(255, 255,255, .1)',
+    borderRadius: '0px',
+    border: '0px',
+  }),
+  option: (styles, {data, isDisabled, isFocused, isSelected }) => {
+    return {
+      ...styles,
+      color: '#343a40',
+    };
+  }
+};
+
 
 /*
  * Search Component
@@ -30,35 +47,32 @@ const debouncedSearch = debounce(search, 800);
 class SearchComponent extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = { 'name': 'foo', 'value': 'foo' };
-
+    this.state = { value: 'foo' };
     this.getOptions = this.getOptions.bind(this);
     this.onChange = this.onChange.bind(this);
   }
 
   getOptions(searchTerm, callback) {
     if (!searchTerm) {
-      return callback(null, { options: [] });
+      return callback({ options: [] });
     }
     debouncedSearch(searchTerm, callback);
   }
 
-  onChange(obj) {
-    this.setState(obj);
-    console.log(this.state);
+  onChange(value) {
+    this.setState({value});
   }
 
   render() {
     return (
-      <Async
-        id="definition-search"
+      <AsyncSelect
+        id="search"
         className="navbar-nav form-control form-control-dark search-control"
         placeholder="Search..."
-        labelKey="name"
-        cache={false}
         loadOptions={ this.getOptions }
-        onChange={ this.onChange }
+        getOptionLabel={option => option.name}
+        onInputChange={ this.onChange }
+        styles = { customStyles }
       />
     );
   }
