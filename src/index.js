@@ -6,7 +6,6 @@ import registerServiceWorker from "./registerServiceWorker";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/css/bootstrap-grid.min.css";
 import "bootstrap/dist/css/bootstrap-reboot.min.css";
-import "react-select/dist/react-select.css";
 
 import "./assets/css/dashboard.css";
 import "./assets/css/custom.css";
