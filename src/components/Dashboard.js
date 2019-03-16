@@ -8,21 +8,10 @@ import Sidebar from "./Sidebar";
 /*
  * Dashboard Component
  */
-export default class Dashboard extends React.Component {
-  componentDidMount() {
-    /*only works if you're passing appState to this.props */
-    this.props.debug && console.log("Dashboard componentDidMount");
-  }
-
-  componentWillReceiveProps(nextProps) {
-    /*only works if you're passing appState to this.props */
-    this.props.debug && console.log("Dashboard componentWillReceiveProps ");
-  }
-
-  render() {
+const Dashboard = (props) => {
     return (
       <main>
-        <Header {...this.props} />
+        <Header {...props} />
         <Sidebar />
         <Row>
           <div role="main" className="col-md-9 ml-sm-auto col-lg-10 px-4">
@@ -34,5 +23,6 @@ export default class Dashboard extends React.Component {
         </Row>
       </main>
     );
-  }
 }
+
+export default Dashboard;
