@@ -1,6 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { mount, shallow } from "enzyme";
 import { MemoryRouter } from "react-router-dom";
 import { AppContext, appState } from "../contexts/App";
 import { CONFIG } from "../config";
