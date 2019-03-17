@@ -40,7 +40,7 @@ const Header = (props) => {
           </NavbarBrand>
 
           {/* <Collapse>'able part of the NavMenu */}
-          <Collapse isOpen={navIsOpen} navbar>
+          <Collapse data-testid="collapse" isOpen={navIsOpen} navbar>
             <ul className="navbar-nav">
               <li className="nav-item text-nowrap">
                 <Link to="#" className="nav-link">
@@ -73,7 +73,7 @@ const Header = (props) => {
           </ul>
 
           {/* NavbarToggle for the <Collapse> */}
-          <NavbarToggler onClick={toggleNav} />
+          <NavbarToggler data-testid="toggler" onClick={toggleNav} />
         </Navbar>
       )}
     </AppContext.Consumer>

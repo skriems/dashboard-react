@@ -1,5 +1,5 @@
 import React from "react";
-import { render, cleanup } from 'react-testing-library';
+import { render, cleanup, fireEvent } from 'react-testing-library';
 import 'jest-dom/extend-expect';
 
 import { MemoryRouter } from "react-router-dom";
@@ -29,5 +29,24 @@ describe("<Header/>", () => {
         </AppContext.Provider>
       </MemoryRouter>
     , div);
+  })
+
+  it("collapses when clicked on toggler", () => {
+    let utils = render(
+      <MemoryRouter>
+        <AppContext.Provider value={testState}>
+          <Header />
+        </AppContext.Provider>
+      </MemoryRouter>
+    , div);
+
+    let collapse = utils.getByTestId('collapse');
+    expect(collapse.classList).toContain('collapse');
+
+    let toggler = utils.getByTestId('toggler');
+    fireEvent.click(toggler);
+
+    collapse = utils.getByTestId('collapse')
+    expect(collapse.classList).toContain('collapsing')
   })
 });
